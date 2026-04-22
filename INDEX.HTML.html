@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresuFácil Pro | Gestión de Presupuestos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-2 rounded-lg">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">Presu<span class="text-blue-600">Fácil</span></h1>
+            </div>
+            <div class="flex gap-3">
+                <button class="text-sm font-semibold text-slate-500 hover:text-blue-600 transition">Mi Cuenta</button>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-md hover:bg-blue-700 transition">Pro Plan</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto p-4 md:p-8">
+        <div class="grid md:grid-cols-2 gap-8">
+            
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="mb-6">
+                    <h2 class="text-lg font-bold text-slate-800">Calculadora de Costos</h2>
+                    <p class="text-sm text-slate-500">Completá los campos para generar el valor final.</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div class="group">
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1 tracking-widest">Material y Medida</label>
+                        <input type="text" id="material" placeholder="Ej: Hierro Estructural 20x20 (6mts)" class="w-full border-slate-200 rounded-xl p-3 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all outline-none border">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1 tracking-widest">Cantidad</label>
+                            <input type="number" id="cantidad" placeholder="0" class="w-full border-slate-200 rounded-xl p-3 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all outline-none border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1 tracking-widest">Precio Unitario ($)</label>
+                            <input type="number" id="precio" placeholder="0.00" class="w-full border-slate-200 rounded-xl p-3 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all outline-none border">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1 tracking-widest">Mano de Obra ($)</label>
+                        <input type="number" id="manoDeObra" placeholder="Valor de tu trabajo" class="w-full border-slate-200 rounded-xl p-3 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all outline-none border">
+                    </div>
+
+                    <button onclick="calcular()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-blue-600 transition-all transform hover:-translate-y-1 shadow-xl">
+                        Calcular Ahora
+                    </button>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div id="resultado" class="hidden bg-blue-600 rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <span class="text-blue-200 text-sm font-semibold uppercase tracking-widest">Precio Sugerido al Cliente</span>
+                        <h3 id="precioFinal" class="text-5xl font-black mt-2 mb-4">$0.00</h3>
+                        <div class="flex flex-col gap-2 border-t border-blue-500 pt-4 mt-4">
+                            <div class="flex justify-between text-sm"><span class="text-blue-200">Costo Materiales (+10%):</span> <span id="resMaterial" class="font-bold"></span></div>
+                            <div class="flex justify-between text-sm"><span class="text-blue-200">Mano de Obra:</span> <span id="resMano" class="font-bold"></span></div>
+                        </div>
+                    </div>
+                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-blue-500 rounded-full opacity-50"></div>
+                </div>
+
+                <div id="acciones" class="hidden grid grid-cols-1 gap-3">
+                    <button class="w-full bg-white border border-slate-200 text-slate-700 font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-50 transition">
+                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"></path></svg>
+                        Descargar PDF Profesional
+                    </button>
+                    <button class="w-full bg-[#25D366] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition">
+                        Enviar por WhatsApp
+                    </button>
+                </div>
+
+                <div id="empty-state" class="bg-slate-200 border-2 border-dashed border-slate-300 rounded-2xl h-64 flex flex-col items-center justify-center text-slate-400 px-6 text-center">
+                    <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-sm">Ingresá los datos a la izquierda para generar una vista previa del presupuesto profesional.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        function calcular() {
+            const material = document.getElementById('material').value;
+            const cantidad = document.getElementById('cantidad').value;
+            const precio = document.getElementById('precio').value;
+            const manoDeObra = document.getElementById('manoDeObra').value;
+            
+            if(cantidad && precio && manoDeObra) {
+                const costoMaterial = (cantidad * precio) * 1.10;
+                const total = costoMaterial + parseFloat(manoDeObra);
+                
+                // Formatear Moneda
+                const formatter = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
+                
+                document.getElementById('precioFinal').innerText = formatter.format(total);
+                document.getElementById('resMaterial').innerText = formatter.format(costoMaterial);
+                document.getElementById('resMano').innerText = formatter.format(manoDeObra);
+
+                // UI Transitions
+                document.getElementById('empty-state').classList.add('hidden');
+                document.getElementById('resultado').classList.remove('hidden');
+                document.getElementById('acciones').classList.remove('hidden');
+            } else {
+                alert("Che, completame todos los campos para poder calcular bien.");
+            }
+        }
+    </script>
+</body>
+</html>
